@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>graphic sapmple 1</title>
+    <meta charset="utf-8">
+    <script src="../resources/p5.js/p5.min.js"></script>
+  </head>
+  <body style="overflow:hidden; margin:0;">
+    <script>
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+      }
+      function draw(){
+        background(33);
+        noStroke();
+        for(var i=0; i<ps.length; i++){
+          if(!ps[i].update()){
+            ps.splice(i--,1);
+            continue;
+          }
+          ps[i].draw();
+        }
+      }
+      function mouseMoved(){
+        ps.push(new particle());
+      }
+      var ps=[];
+      function particle(){
+        var c1=int(random(0,255)),
+            c2=int(random(0,255)),
+            c3=int(random(0,255));
+        this.color='rgba('+c1+','+c2+','+c3+',0.8)';
+        this.x    =mouseX+random(-30,30);
+        this.y    =mouseY+random(-30,30);
+        this.r    =random(20,100);
+      }
+      particle.prototype.draw=function(){
+        fill(this.color);
+        ellipse(this.x,this.y,this.r,this.r);
+      }
+      particle.prototype.update=function(){
+        this.r-=1;
+        return this.r>5;
+      }
+    </script>
+  </body>
+</html>
