@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>p5-graphic-sample-3</title>
+    <meta charset="utf-8">
+    <link href="../css/stylesheet.css" rel="stylesheet">
+    <script src="./p5.min.js"></script>
+    <style>
+      /***************music*******************/
+.container[data-type=util-music]{
+  position:absolute;
+  width:500px;
+  top:50%;
+  left: 50%;
+  margin:-150px 0 0 -250px;
+  padding:50px 0 55px;
+
+  background:#fff;
+  outline:2px dashed #ccc;
+  font-size:1.5em;
+  font-weight: bold;
+  text-align: center;
+  color:#aaa;
+
+  cursor:pointer;
+}
+.container[data-type=util-music]:hover{
+  color:#5d5d5d;
+}
+.container[data-type=util-music] input[type=file]{
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  opacity: 0;
+  cursor:pointer;
+}
+
+      </style>
+  </head>
+  <body style="margin:0; overflow:hidden">
+    <section class="container" data-type="util-music">
+        Drag and Drop<br/>(image file)
+    </section>
+    <script type="text/javascript">
+      var container=document.getElementsByClassName('container')[0];
+      function setPreventEvent(e){
+          e.preventDefault();
+      }
+      container.ondragenter=setPreventEvent;
+      container.ondragover=setPreventEvent;
+      container.ondrop=function(e){
+      var file=e.dataTransfer.files[0];
+      if(!file || !file.type.match(/image.*/)){
+        alert("this file is not iamge file");
+        return false;
+      }
+      var reader=new FileReader();
+      var img;
+      function particle(x,y,c){
+        this.x=x;
+        this.y=y;
+        this.c=c;
+        this.w=random(1,50);
+        this.g=5;
+      }
+      particle.prototype.draw=function(){
+        noStroke();
+        fill(this.c);
+        ellipse(this.x,this.y,this.w,this.w);
+      }
+      var ps=[];
+      reader.onload=function(){
+          var result=reader.result;
+          container.style.display="none";
+          createCanvas(window.innerWidth,window.innerHeight);
+          loadImage(result,function(img){
+            img.loadPixels();
+            var colors=[];
+            draw=function(){
+              background(0);
+              for(var i=0; i<5; i++){
+                var x=random(0,img.width),
+                    y=random(0,img.height);
+                ps.push(new particle(x,y,img.get(x,y)));
+              }
+              for(var i=0; i<ps.length; i++){
+                ps[i  ].draw();
+              }
+            }
+          });
+        }
+        reader.readAsDataURL(file);
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      setup=function(){}
+    </script>
+  </body>
+</html>
